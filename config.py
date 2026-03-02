@@ -37,3 +37,12 @@ EXCLUDED_NAME_PREFIXES = [
 
 # Deal keyword indicators in overlay text
 DEAL_KEYWORDS = ["off", "save", "discount", "expires"]
+
+# ---------------------------------------------------------------------------
+# Storage Backend Configuration
+# ---------------------------------------------------------------------------
+# Options: "sqlite" (recommended) or "csv" (legacy)
+STORAGE_BACKEND = "sqlite"
+
+# SQLite database file path
+DB_PATH = "costco_tracker.db"

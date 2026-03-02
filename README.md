@@ -12,8 +12,9 @@ run.py              → Entry point (chains all 4 phases)
 ├── tracker.py      → Detects stock/price/deal changes vs. history
 └── dashboard.py    → Generates interactive HTML dashboard
 
-config.py           → Shared constants (Chrome path, ports, tuning)
+config.py           → Shared constants (Chrome path, ports, storage)
 chrome_utils.py     → WSL → Windows Chrome CDP connection utilities
+database.py         → SQLite database abstraction layer
 ```
 
 ## Quick Start
@@ -55,9 +56,28 @@ Open `visualizer.html` in any browser after running the pipeline. Features:
 - Color-coded change badges (green = positive, red = negative, blue = info)
 - Store exclusivity indicators
 
+## Storage Backend
+
+Configurable in `config.py` via `STORAGE_BACKEND`:
+
+| Backend  | Storage                      | Best For               |
+|----------|------------------------------|------------------------|
+| `sqlite` | `costco_tracker.db` (default)| Full history & queries |
+| `csv`    | `history/*.csv` + JSON       | Simple, no dependencies|
+
+SQLite stores all snapshots, products, and change events in a single
+file with indexed queries. The CSV matrix and `changes.json` are always
+generated for dashboard compatibility regardless of backend.
+
+```python
+# config.py
+STORAGE_BACKEND = "sqlite"  # or "csv"
+DB_PATH = "costco_tracker.db"
+```
+
 ## Requirements
 
-- Python 3.8+
+- Python 3.8+ (sqlite3 included in stdlib)
 - Windows Chrome (accessed via CDP from WSL)
 - `pip install playwright requests beautifulsoup4`
 - `playwright install chromium`

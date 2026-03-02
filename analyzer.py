@@ -2,15 +2,16 @@
 
 Reads per-store CSV files (products_*.csv) produced by the scraper,
 merges them into a unified comparison matrix, and outputs both the
-matrix CSV and per-store statistics.
+matrix CSV and per-store statistics. Also saves data to SQLite when
+the storage backend is configured as 'sqlite'.
 """
 
 import csv
 import glob
 import os
-import subprocess
-import sys
 from collections import defaultdict
+
+from config import STORAGE_BACKEND
 
 
 def run_analyzer():
@@ -46,7 +47,7 @@ def run_analyzer():
     total_unique = len(all_products)
     print(f"Total Unique Products Across All Stores: {total_unique}")
 
-    # Build the comparison matrix CSV
+    # Build the comparison matrix CSV (always generated for dashboard)
     matrix_filename = "costco_all_stores_comparison.csv"
 
     headers = ["Product Name", "Image_URL"]
@@ -62,7 +63,6 @@ def run_analyzer():
         writer.writerow(headers)
 
         for product in sorted(all_products.keys()):
-            # Pick the first available image URL
             best_img = ""
             for s in store_names:
                 img = all_products[product].get(s, {}).get("img_url", "")
@@ -80,6 +80,12 @@ def run_analyzer():
             writer.writerow(row)
 
     print(f"[+] Comparison matrix saved: {matrix_filename}")
+
+    # Save snapshot to SQLite database
+    if STORAGE_BACKEND == "sqlite":
+        from database import TrackerDB
+        with TrackerDB() as db:
+            db.create_snapshot(store_names, dict(all_products))
 
     # Per-store statistics
     for store in store_names:

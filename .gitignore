@@ -9,6 +9,7 @@ products_*.csv
 costco_all_stores_comparison.csv
 changes.json
 visualizer.html
+*.db
 
 # Debug artifacts
 intercepted_log.txt
