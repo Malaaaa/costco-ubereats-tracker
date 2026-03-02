@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Generated data
+products_*.csv
+costco_all_stores_comparison.csv
+changes.json
+visualizer.html
+
+# Debug artifacts
+intercepted_log.txt
+links.txt
+intercept_logs/
+*.png
+debug_api.json
+
+# IDE
+.vscode/
+.idea/
